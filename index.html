@@ -146,6 +146,13 @@
             justify-content: center;
         }
         .copy-btn:hover { background-color: #218838; }
+        .edit-btn { 
+            background-color: #ffc107; 
+            color: #212529; 
+        }
+        .edit-btn:hover { 
+            background-color: #e0a800; 
+        }
         .remove-btn { background-color: #dc3545; color: white; }
         .remove-btn:hover { background-color: #c82333; }
 
@@ -157,6 +164,23 @@
         }
         .controls > div {
             width: 100%;
+        }
+        .sort-pagination-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pagination-controls button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            min-width: 40px;
         }
 
         #empty-message {
@@ -175,20 +199,6 @@
         }
 
         /* Loading Spinner */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #007bff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -201,6 +211,43 @@
             align-items: center;
             z-index: 1000;
             display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        body.dark-mode .loading-overlay { background: rgba(18,18,18,0.8); }
+        .loading-container {
+            --uib-size: 40px;
+            --uib-color: #007bff;
+            --uib-speed: 1.4s;
+            --uib-bg-opacity: .1;
+            height: var(--uib-size);
+            width: var(--uib-size);
+            transform-origin: center;
+            overflow: visible;
+        }
+        body.dark-mode .loading-container { --uib-color: #8ab4f8; }
+        .car {
+            fill: none;
+            stroke: var(--uib-color);
+            stroke-dasharray: 15, 85;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            animation: travel var(--uib-speed) linear infinite;
+            will-change: stroke-dasharray, stroke-dashoffset;
+            transition: stroke 0.5s ease;
+        }
+        .track {
+            stroke: var(--uib-color);
+            opacity: var(--uib-bg-opacity);
+            transition: stroke 0.5s ease;
+        }
+        @keyframes travel {
+            0% {
+              stroke-dashoffset: 0;
+            }
+            100% {
+              stroke-dashoffset: -100;
+            }
         }
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
         body.dark-mode .container { background: #1e1e1e; box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
@@ -224,8 +271,9 @@
         body.dark-mode #owner-login-btn:hover { background-color: #5a6268; }
         body.dark-mode #empty-message { color: #999; }
         body.dark-mode .top-controls { box-shadow: 0 2px 4px rgba(0,0,0,0.3); background: #1e1e1e; }
-        body.dark-mode .loading { border-color: #333; border-top-color: #8ab4f8; }
         body.dark-mode .loading-overlay { background: rgba(18,18,18,0.8); }
+        body.dark-mode .edit-btn { background-color: #e0a800; color: #212529; }
+        body.dark-mode .edit-btn:hover { background-color: #d39e00; }
 
         @media (min-width: 768px) {
             
@@ -254,6 +302,11 @@
             }
             .controls > div { 
                 width: auto;
+            }
+            .sort-pagination-wrapper {
+                flex: 1;
+                justify-content: flex-end;
+                gap: 20px;
             }
 
             .link-item { 
@@ -287,8 +340,8 @@
     <h1>NiK's Link Organizer</h1>
 
     <div class="top-controls">
-        <button id="dark-mode-toggle">🌓 Toggle Dark Mode</button>
-        <div class="data-management">
+        <button id="dark-mode-toggle">🌓</button>
+        <div class="data-management" id="data-management" style="display: none;">
             <button id="export-btn" title="Export links to a local JSON file">⬇️ Export</button>
             <button id="import-btn" title="Import links from a local JSON file (Note: Does not update Sheet)">⬆️ Import</button>
         </div>
@@ -319,14 +372,23 @@
     <div class="filter-section">
         <div class="controls">
             <h2 id="link-counter">Saved Links (0)</h2>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <label for="sort-select">Sort By:</label>
-                <select id="sort-select">
-                    <option value="timestamp-desc">Newest First</option>
-                    <option value="timestamp-asc">Oldest First</option>
-                    <option value="description-asc">Description (A-Z)</option>
-                    <option value="description-desc">Description (Z-A)</option>
-                </select>
+            <div class="sort-pagination-wrapper">
+                <div class="pagination-controls" id="top-pagination-controls" style="display: none;">
+                    <button id="top-prev-btn" disabled>&lt;</button>
+                    <span id="top-page-info"></span>
+                    <button id="top-next-btn" disabled>&gt;</button>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label for="sort-select">Sort By:</label>
+                    <select id="sort-select">
+                        <option value="timestamp-desc">Newest First</option>
+                        <option value="timestamp-asc">Oldest First</option>
+                        <option value="url-asc">Link (A-Z)</option>
+                        <option value="url-desc">Link (Z-A)</option>
+                        <option value="description-asc">Description (A-Z)</option>
+                        <option value="description-desc">Description (Z-A)</option>
+                    </select>
+                </div>
             </div>
         </div>
         <input type="text" id="search-input" placeholder="🔍 Search links, descriptions, or tags...">
@@ -334,10 +396,37 @@
 
     <div id="empty-message">No links loaded. Connect to API or add a link.</div>
     <ul id="link-list"></ul>
+    <div class="pagination-controls" id="bottom-pagination-controls" style="display: none;">
+        <button id="prev-btn" disabled>&lt;</button>
+        <span id="page-info"></span>
+        <button id="next-btn" disabled>&gt;</button>
+    </div>
 </div>
 
 <div class="loading-overlay" id="loading-overlay">
-    <div class="loading"></div>
+    <svg
+      class="loading-container"
+      x="0px"
+      y="0px"
+      viewBox="0 0 40 40"
+      height="40"
+      width="40"
+      preserveAspectRatio="xMidYMid meet">
+    <path
+      class="track"
+      fill="none"
+      stroke-width="4"
+      pathLength="100"
+      d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z">
+    </path>
+    <path
+      class="car"
+      fill="none"
+      stroke-width="4"
+      pathLength="100"
+      d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z">
+    </path>
+    </svg>
     <span>Loading...</span>
 </div>
 
@@ -358,11 +447,25 @@
     const presetTags = document.getElementById('preset-tags');
     const addButton = document.getElementById('add-link');
     const loadingOverlay = document.getElementById('loading-overlay');
+    const dataManagement = document.getElementById('data-management');
+    const topPaginationControls = document.getElementById('top-pagination-controls');
+    const bottomPaginationControls = document.getElementById('bottom-pagination-controls');
+    const topPrevBtn = document.getElementById('top-prev-btn');
+    const topNextBtn = document.getElementById('top-next-btn');
+    const topPageInfo = document.getElementById('top-page-info');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
     const body = document.body;
     
     let links = [];
     let isOwner = false;
     let ownerPassword = '';
+    let isEditing = false;
+    let editingRow = null;
+    let editingTimestamp = null;
+    const pageSize = 10;
+    let currentPage = 1;
 
     function showLoading() {
         loadingOverlay.style.display = 'flex';
@@ -392,8 +495,9 @@
             isOwner = false;
             ownerPassword = '';
             ownerSection.style.display = 'none';
+            dataManagement.style.display = 'none';
             renderLinks();
-            ownerLoginBtn.innerHTML = '⚙️';
+            ownerLoginBtn.innerHTML = '🔑';
             ownerLoginBtn.title = 'Login to enable Add and Remove functionality';
             alert('Owner mode disabled.');
         } else {
@@ -403,6 +507,7 @@
                 ownerPassword = password.trim();
                 isOwner = true;
                 ownerSection.style.display = 'flex';
+                dataManagement.style.display = 'flex';
                 renderLinks();
                 ownerLoginBtn.innerHTML = 'Exit';
                 ownerLoginBtn.title = 'Logout to disable Add and Remove functionality';
@@ -429,6 +534,7 @@
                     tags: item.tags ? item.tags.split(',').map(t => t.trim()) : [],
                     timestamp: parseInt(item.timestamp)
                 }));
+                currentPage = 1;
                 filterAndSortLinks();
             }
         } catch (err) { 
@@ -458,13 +564,51 @@
                     ...link 
                 }) 
             });
-            
-            linkInput.value = ''; 
-            descriptionInput.value = ''; 
-            tagsInput.value = '';
-            setTimeout(loadLinksFromSheet, 500); 
         } catch (err) { 
             alert('Failed to add link to cloud. Check console.'); 
+            console.error(err); 
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function updateLinkToSheet(link) {
+        if (!isOwner || !ownerPassword) {
+            alert('Owner login required to update links.');
+            return;
+        }
+        showLoading();
+        try {
+            // Delete the old entry
+            await fetch(SHEET_API_URL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ 
+                    action: 'delete', 
+                    password: ownerPassword,  
+                    row: link.row 
+                }) 
+            });
+
+            // Add the new entry
+            const newId = Date.now().toString();
+            await fetch(SHEET_API_URL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ 
+                    action: 'post', 
+                    password: ownerPassword,  
+                    id: newId,
+                    url: link.url, 
+                    description: link.description, 
+                    tags: link.tags,
+                    timestamp: link.timestamp
+                }) 
+            });
+        } catch (err) { 
+            alert('Failed to update link to cloud. Check console.'); 
             console.error(err); 
         } finally {
             hideLoading();
@@ -489,8 +633,6 @@
                     row 
                 }) 
             });
-            
-            setTimeout(loadLinksFromSheet, 500); 
         } catch (err) { 
             alert('Failed to remove link from cloud. Check console.'); 
             console.error(err); 
@@ -499,31 +641,30 @@
         }
     }
 
-    function renderLinks(currentLinks = links) {
+    function renderLinks(currentLinks) {
         linkList.innerHTML = '';
-        linkCounter.textContent = `Saved Links (${currentLinks.length})`;
         
         if (currentLinks.length === 0) { 
-            emptyMessage.style.display = 'block'; 
-            emptyMessage.textContent = links.length > 0 ? "No results found." : "No links loaded. Connect to API or add a link.";
             return; 
         }
-        emptyMessage.style.display = 'none';
         
         currentLinks.forEach(linkObj => {
             const li = document.createElement('li');
             li.className = 'link-item';
             const tagsHtml = linkObj.tags.map(tag => `<span class="tag" data-filter-tag="${tag}">${tag}</span>`).join('');
+            let displayUrl = linkObj.url.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+            displayUrl = displayUrl.replace(/^www\./i, '');
             
             li.innerHTML = `
                 <div class="link-details">
-                    <div class="link-domain">${getDomain(linkObj.url)}</div>
-                    <a href="${linkObj.url}" target="_blank" rel="noopener noreferrer" class="link-url">${linkObj.url}</a>
+                    <div class="link-domain">${linkObj.url}</div>
+                    <a href="${linkObj.url}" target="_blank" rel="noopener noreferrer" class="link-url">${displayUrl}</a>
                     <p class="link-description">${linkObj.description}</p>
                     <div class="link-tags">${tagsHtml}</div>
                 </div>
                 <div class="link-actions">
                     <button class="copy-btn" data-url="${linkObj.url}" title="Copy Link URL">📋</button>
+                    ${isOwner ? `<button class="edit-btn" data-row="${linkObj.row}" title="Edit link">Edit</button>` : ''}
                     ${isOwner ? `<button class="remove-btn" data-row="${linkObj.row}" title="Remove permanently">Remove</button>` : ''}
                 </div>
             `;
@@ -536,20 +677,55 @@
         document.querySelectorAll('.copy-btn').forEach(btn => btn.onclick = e => copyLink(e.target.dataset.url, e.target));
         
         if (isOwner) {
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    const row = parseInt(e.target.dataset.row);
+                    const editingLink = links.find(l => l.row === row);
+                    if (editingLink) {
+                        isEditing = true;
+                        editingRow = row;
+                        editingTimestamp = editingLink.timestamp;
+                        linkInput.value = editingLink.url;
+                        descriptionInput.value = editingLink.description;
+                        tagsInput.value = editingLink.tags.join(', ');
+                        addButton.textContent = 'Update Link';
+                        presetTags.value = '';
+                        ownerSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                };
+            });
+            
             document.querySelectorAll('.remove-btn').forEach(btn => {
-                btn.onclick = e => removeLinkFromSheet(e.target.dataset.row);
+                btn.onclick = async (e) => {
+                    const row = parseInt(e.target.dataset.row);
+                    await removeLinkFromSheet(row);
+                    setTimeout(() => loadLinksFromSheet(), 500);
+                };
             });
         }
         
         document.querySelectorAll('.tag').forEach(tag => { 
             tag.onclick = e => { 
                 searchInput.value = e.target.dataset.filterTag; 
+                currentPage = 1;
                 filterAndSortLinks(); 
             }; 
         });
     }
 
-    addButton.onclick = () => {
+    function updatePagination(filteredTotal) {
+        const totalPages = Math.ceil(filteredTotal / pageSize);
+        topPageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        topPrevBtn.disabled = currentPage <= 1;
+        prevBtn.disabled = currentPage <= 1;
+        topNextBtn.disabled = currentPage >= totalPages;
+        nextBtn.disabled = currentPage >= totalPages;
+        topPaginationControls.style.display = filteredTotal > pageSize ? 'flex' : 'none';
+        bottomPaginationControls.style.display = filteredTotal > pageSize ? 'flex' : 'none';
+    }
+
+    addButton.onclick = async () => {
         const url = linkInput.value.trim();
         const desc = descriptionInput.value.trim() || 'No description';
         const tagsStr = tagsInput.value.split(',').map(t => t.trim().toLowerCase()).filter(t => t).join(',');
@@ -567,13 +743,32 @@
         }
         
         const newLink = { 
-            id: Date.now().toString(), 
             url, 
             description: desc, 
             tags: tagsStr, 
             timestamp: Date.now() 
         };
-        addLinkToSheet(newLink);
+        
+        if (isEditing) {
+            newLink.timestamp = editingTimestamp;
+            newLink.row = editingRow;
+            await updateLinkToSheet(newLink);
+            isEditing = false;
+            editingRow = null;
+            editingTimestamp = null;
+            addButton.textContent = 'Add Link to Cloud';
+        } else {
+            newLink.id = Date.now().toString();
+            await addLinkToSheet(newLink);
+        }
+        
+        // Clear inputs
+        linkInput.value = ''; 
+        descriptionInput.value = ''; 
+        tagsInput.value = '';
+        presetTags.value = '';
+        
+        setTimeout(() => loadLinksFromSheet(), 1000);
     };
 
     presetTags.onchange = () => {
@@ -586,8 +781,16 @@
         }
     };
 
-    searchInput.oninput = filterAndSortLinks;
-    sortSelect.onchange = filterAndSortLinks;
+    searchInput.oninput = () => {
+        currentPage = 1;
+        filterAndSortLinks();
+    };
+    
+    sortSelect.onchange = () => {
+        currentPage = 1;
+        filterAndSortLinks();
+    };
+
     function filterAndSortLinks() {
         let filtered = links; 
         const term = searchInput.value.toLowerCase().trim(); 
@@ -605,13 +808,58 @@
             switch (sort) {
                 case 'timestamp-desc': return b.timestamp - a.timestamp;
                 case 'timestamp-asc': return a.timestamp - b.timestamp;
+                case 'url-asc': return a.url.localeCompare(b.url);
+                case 'url-desc': return b.url.localeCompare(a.url);
                 case 'description-asc': return a.description.localeCompare(b.description);
                 case 'description-desc': return b.description.localeCompare(a.description);
                 default: return b.timestamp - a.timestamp;
             }
         });
-        renderLinks(filtered);
+
+        const filteredTotal = filtered.length;
+        
+        if (filteredTotal === 0) {
+            emptyMessage.style.display = 'block';
+            emptyMessage.textContent = links.length > 0 ? "No results found." : "No links loaded. Connect to API or add a link.";
+            linkCounter.textContent = `Saved Links (${links.length})`;
+            linkList.innerHTML = '';
+            topPaginationControls.style.display = 'none';
+            bottomPaginationControls.style.display = 'none';
+            return;
+        }
+        
+        const maxPage = Math.ceil(filteredTotal / pageSize);
+        if (currentPage > maxPage) currentPage = maxPage;
+        
+        const startIdx = (currentPage - 1) * pageSize;
+        const paginated = filtered.slice(startIdx, startIdx + pageSize);
+        
+        const showingStart = startIdx + 1;
+        const showingEnd = Math.min(startIdx + paginated.length, filteredTotal);
+        
+        linkCounter.textContent = `Saved Links (${filteredTotal}) | Showing ${showingStart} - ${showingEnd} of ${filteredTotal}`;
+        emptyMessage.style.display = 'none';
+        
+        renderLinks(paginated);
+        updatePagination(filteredTotal);
     }
+
+    function goToPreviousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            filterAndSortLinks();
+        }
+    }
+
+    function goToNextPage() {
+        currentPage++;
+        filterAndSortLinks();
+    }
+
+    topPrevBtn.onclick = goToPreviousPage;
+    prevBtn.onclick = goToPreviousPage;
+    topNextBtn.onclick = goToNextPage;
+    nextBtn.onclick = goToNextPage;
 
     darkModeToggle.onclick = () => { 
         body.classList.toggle('dark-mode'); 
@@ -639,6 +887,7 @@
                     ...link, 
                     tags: Array.isArray(link.tags) ? link.tags : (link.tags ? link.tags.split(',').map(t => t.trim()) : [])
                 }));
+                currentPage = 1;
                 filterAndSortLinks();
                 alert(`Successfully imported ${links.length} links for local viewing.`);
             } else {
