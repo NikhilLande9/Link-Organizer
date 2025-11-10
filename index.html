@@ -4,903 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Google Sheets Link Organizer</title>
-
-    <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            padding: 10px;
-            background-color: #f4f4f9; 
-            color: #333; 
-            transition: background-color 0.3s, color 0.3s; 
-        }
-        .container { 
-            width: 100%;
-            max-width: 1200px; 
-            margin: 10px auto; 
-            background: #fff; 
-            padding: 15px;
-            border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            transition: background-color 0.3s, box-shadow 0.3s; 
-        }
-        h1 { color: #007bff; text-align: center; font-size: 1.8em; margin-bottom: 20px; }
-        h2 { color: #555; font-size: 1.2em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
-
-        .input-section, .filter-section { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            padding: 15px; 
-            border: 1px solid #e0e0e0; 
-            border-radius: 6px; 
-        }
-        input[type="text"], input[type="url"], textarea, select { 
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 6px; 
-            font-size: 1em; 
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input:focus, textarea:focus, select:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-            outline: none;
-        }
-        button { 
-            padding: 10px 15px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 1em; 
-            transition: background-color 0.2s, transform 0.1s;
-        }
-        button:hover {
-            transform: translateY(-1px);
-        }
-        button#add-link { background-color: #007bff; color: white; }
-        button#add-link:hover { background-color: #0056b3; }
-        #owner-login-btn { 
-            background-color: #ff791f; 
-            color: white; 
-            font-size: 0.9em; 
-            padding: 8px 12px; 
-            opacity: 0.7;
-        }
-        #owner-login-btn:hover { 
-            background-color: #d1f823; 
-            opacity: 1;
-        }
-
-        .top-controls { 
-            display: flex; 
-            flex-direction: column;
-            gap: 10px; 
-            margin-bottom: 15px; 
-            position: sticky;
-            top: 10px;
-            z-index: 10;
-            background: inherit;
-            padding: 10px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .data-management {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-        }
-        .data-management button {
-            flex-grow: 1; 
-        }
-        
-        .link-item { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-start; 
-            padding: 12px; 
-            margin-bottom: 10px;
-            border: 1px solid #f0f0f0;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: box-shadow 0.2s, transform 0.2s;
-        }
-        .link-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        .link-details { 
-            width: 100%;
-            margin-bottom: 8px; 
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        .link-domain { font-size: 0.8em; color: #777; margin-bottom: 2px; }
-        .link-url { font-size: 0.9em; display: block; margin-bottom: 4px; color: #0056b3; text-decoration: none; transition: color 0.2s; }
-        .link-url:hover { color: #004085; text-decoration: underline; }
-        .link-description { font-size: 0.85em; margin: 0 0 5px 0; }
-
-        .link-tags { margin-top: 5px; }
-        .tag { display: inline-block; background-color: #e9ecef; color: #555; padding: 3px 8px; margin: 3px 4px 3px 0; border-radius: 15px; font-size: 0.7em; cursor: pointer; transition: background-color 0.2s, transform 0.1s; }
-        .tag:hover { background-color: #dee2e6; transform: translateY(-1px); }
-
-        .link-actions {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end; 
-            gap: 8px;
-        }
-        .link-actions button { 
-            padding: 7px 10px;
-            font-size: 0.85em; 
-        }
-        .copy-btn { 
-            background-color: #28a745; 
-            color: white; 
-            min-width: 35px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-        }
-        .copy-btn:hover { background-color: #218838; }
-        .edit-btn { 
-            background-color: #ffc107; 
-            color: #212529; 
-        }
-        .edit-btn:hover { 
-            background-color: #e0a800; 
-        }
-        .remove-btn { background-color: #dc3545; color: white; }
-        .remove-btn:hover { background-color: #c82333; }
-
-        .controls { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            align-items: flex-start;
-        }
-        .controls > div {
-            width: 100%;
-        }
-        .sort-pagination-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            width: 100%;
-            gap: 10px;
-        }
-        .pagination-controls {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .pagination-controls button {
-            padding: 8px 12px;
-            font-size: 0.9em;
-            min-width: 40px;
-        }
-
-        #empty-message {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-style: italic;
-            display: block;
-            transition: color 0.3s;
-        }
-
-        #link-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* Loading Spinner */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-        }
-        body.dark-mode .loading-overlay { background: rgba(18,18,18,0.8); }
-        .loading-container {
-            --uib-size: 40px;
-            --uib-color: #007bff;
-            --uib-speed: 1.4s;
-            --uib-bg-opacity: .1;
-            height: var(--uib-size);
-            width: var(--uib-size);
-            transform-origin: center;
-            overflow: visible;
-        }
-        body.dark-mode .loading-container { --uib-color: #8ab4f8; }
-        .car {
-            fill: none;
-            stroke: var(--uib-color);
-            stroke-dasharray: 15, 85;
-            stroke-dashoffset: 0;
-            stroke-linecap: round;
-            animation: travel var(--uib-speed) linear infinite;
-            will-change: stroke-dasharray, stroke-dashoffset;
-            transition: stroke 0.5s ease;
-        }
-        .track {
-            stroke: var(--uib-color);
-            opacity: var(--uib-bg-opacity);
-            transition: stroke 0.5s ease;
-        }
-        @keyframes travel {
-            0% {
-              stroke-dashoffset: 0;
-            }
-            100% {
-              stroke-dashoffset: -100;
-            }
-        }
-        body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .container { background: #1e1e1e; box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
-        body.dark-mode h1 { color: #8ab4f8; }
-        body.dark-mode h2 { color: #ccc; border-bottom-color: #333; }
-        body.dark-mode .input-section, body.dark-mode .filter-section { border-color: #333; }
-        body.dark-mode input, body.dark-mode textarea, body.dark-mode select { background-color: #333; color: #fff; border: 1px solid #555; }
-        body.dark-mode input:focus, body.dark-mode textarea:focus, body.dark-mode select:focus {
-            border-color: #8ab4f8;
-            box-shadow: 0 0 0 2px rgba(138,180,248,0.25);
-        }
-        body.dark-mode .link-item { background-color: #2a2a2a; border-color: #333; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-        body.dark-mode .link-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        body.dark-mode .link-url { color: #8ab4f8; }
-        body.dark-mode .link-description, body.dark-mode .link-domain { color: #ccc; }
-        body.dark-mode .tag { background-color: #444; color: #ddd; }
-        body.dark-mode .tag:hover { background-color: #555; }
-        body.dark-mode button#add-link { background-color: #5d9cec; }
-        body.dark-mode button#add-link:hover { background-color: #4a8fd8; }
-        body.dark-mode #owner-login-btn { background-color: #6c757d; color: white; }
-        body.dark-mode #owner-login-btn:hover { background-color: #5a6268; }
-        body.dark-mode #empty-message { color: #999; }
-        body.dark-mode .top-controls { box-shadow: 0 2px 4px rgba(0,0,0,0.3); background: #1e1e1e; }
-        body.dark-mode .loading-overlay { background: rgba(18,18,18,0.8); }
-        body.dark-mode .edit-btn { background-color: #e0a800; color: #212529; }
-        body.dark-mode .edit-btn:hover { background-color: #d39e00; }
-
-        @media (min-width: 768px) {
-            
-            body { padding: 20px; }
-            .container { 
-                padding: 25px;
-                margin: 20px auto;
-            }
-            h1 { font-size: 2.2em; }
-            h2 { font-size: 1.4em; }
-
-            .top-controls { 
-                flex-direction: row; 
-                justify-content: space-between;
-                gap: 15px;
-            }
-            .data-management button {
-                margin-left: 8px !important;
-                flex-grow: 0;
-            }
-
-            .controls { 
-                flex-direction: row; 
-                justify-content: space-between;
-                align-items: center;
-            }
-            .controls > div { 
-                width: auto;
-            }
-            .sort-pagination-wrapper {
-                flex: 1;
-                justify-content: flex-end;
-                gap: 20px;
-            }
-
-            .link-item { 
-                flex-direction: row;
-                align-items: center; 
-                justify-content: space-between; 
-            }
-            .link-details { 
-                width: 70%; 
-                margin-right: 20px;
-                margin-bottom: 0;
-            }
-            .link-url { font-size: 1em; }
-            .link-description { font-size: 0.9em; }
-
-            .link-actions {
-                width: 30%; 
-                justify-content: flex-end;
-                gap: 10px;
-            }
-            .link-actions button { 
-                font-size: 1em; 
-                padding: 10px 15px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <h1>NiK's Link Organizer</h1>
 
-<div class="container">
-    <h1>NiK's Link Organizer</h1>
-
-    <div class="top-controls">
-        <button id="dark-mode-toggle">🌓</button>
-        <div class="data-management" id="data-management" style="display: none;">
-            <button id="export-btn" title="Export links to a local JSON file">⬇️ Export</button>
-            <button id="import-btn" title="Import links from a local JSON file (Note: Does not update Sheet)">⬆️ Import</button>
-        </div>
-        <button id="owner-login-btn" title="Login to enable Add and Remove functionality">🔑</button>
-    </div>
-
-    <div class="input-section" id="owner-section" style="display:none;">
-        <h2>➕ Add New Link</h2>
-        <input type="url" id="link-input" placeholder="Paste link URL here (e.g., https://example.com)">
-        <div style="display: flex; gap: 10px;">
-            <select id="preset-tags">
-                <option value="">Select Preset Tag</option>
-                <option value="ai">AI</option>
-                <option value="design">Design</option>
-                <option value="graphics">Graphics</option>
-                <option value="fitness">Fitness</option>
-                <option value="tutorial">Tutorial</option>
-                <option value="vectors">Vectors</option>
-            </select>
-            <input type="text" id="tags-input" placeholder="Or add custom tags (comma-separated)">
-        </div>
-        <textarea id="description-input" placeholder="Type/paste a short description" rows="2"></textarea>
-        <button id="add-link">Add Link to Cloud</button>
-    </div>
-
-    <hr>
-
-    <div class="filter-section">
-        <div class="controls">
-            <h2 id="link-counter">Saved Links (0)</h2>
-            <div class="sort-pagination-wrapper">
-                <div class="pagination-controls" id="top-pagination-controls" style="display: none;">
-                    <button id="top-prev-btn" disabled>&lt;</button>
-                    <span id="top-page-info"></span>
-                    <button id="top-next-btn" disabled>&gt;</button>
+        <div class="top-controls">
+            <!-- From Uiverse.io by Galahhad -->
+            <label class="theme-switch">
+              <input type="checkbox" id="dark-mode-toggle" class="theme-switch__checkbox">
+              <div class="theme-switch__container">
+                <div class="theme-switch__clouds"></div>
+                <div class="theme-switch__stars-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 55" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M135.831 3.00688C135.055 3.85027 134.111 4.29946 133 4.35447C134.111 4.40947 135.055 4.85867 135.831 5.71123C136.607 6.55462 136.996 7.56303 136.996 8.72727C136.996 7.95722 137.172 7.25134 137.525 6.59129C137.886 5.93124 138.372 5.39954 138.98 5.00535C139.598 4.60199 140.268 4.39114 141 4.35447C139.88 4.2903 138.936 3.85027 138.16 3.00688C137.384 2.16348 136.996 1.16425 136.996 0C136.996 1.16425 136.607 2.16348 135.831 3.00688ZM31 23.3545C32.1114 23.2995 33.0551 22.8503 33.8313 22.0069C34.6075 21.1635 34.9956 20.1642 34.9956 19C34.9956 20.1642 35.3837 21.1635 36.1599 22.0069C36.9361 22.8503 37.8798 23.2903 39 23.3545C38.2679 23.3911 37.5976 23.602 36.9802 24.0053C36.3716 24.3995 35.8864 24.9312 35.5248 25.5913C35.172 26.2513 34.9956 26.9572 34.9956 27.7273C34.9956 26.563 34.6075 25.5546 33.8313 24.7112C33.0551 23.8587 32.1114 23.4095 31 23.3545ZM0 36.3545C1.11136 36.2995 2.05513 35.8503 2.83131 35.0069C3.6075 34.1635 3.99559 33.1642 3.99559 32C3.99559 33.1642 4.38368 34.1635 5.15987 35.0069C5.93605 35.8503 6.87982 36.2903 8 36.3545C7.26792 36.3911 6.59757 36.602 5.98015 37.0053C5.37155 37.3995 4.88644 37.9312 4.52481 38.5913C4.172 39.2513 3.99559 39.9572 3.99559 40.7273C3.99559 39.563 3.6075 38.5546 2.83131 37.7112C2.05513 36.8587 1.11136 36.4095 0 36.3545ZM56.8313 24.0069C56.0551 24.8503 55.1114 25.2995 54 25.3545C55.1114 25.4095 56.0551 25.8587 56.8313 26.7112C57.6075 27.5546 57.9956 28.563 57.9956 29.7273C57.9956 28.9572 58.172 28.2513 58.5248 27.5913C58.8864 26.9312 59.3716 26.3995 59.9802 26.0053C60.5976 25.602 61.2679 25.3911 62 25.3545C60.8798 25.2903 59.9361 24.8503 59.1599 24.0069C58.3837 23.1635 57.9956 22.1642 57.9956 21C57.9956 22.1642 57.6075 23.1635 56.8313 24.0069ZM81 25.3545C82.1114 25.2995 83.0551 24.8503 83.8313 24.0069C84.6075 23.1635 84.9956 22.1642 84.9956 21C84.9956 22.1642 85.3837 23.1635 86.1599 24.0069C86.9361 24.8503 87.8798 25.2903 89 25.3545C88.2679 25.3911 87.5976 25.602 86.9802 26.0053C86.3716 26.3995 85.8864 26.9312 85.5248 27.5913C85.172 28.2513 84.9956 28.9572 84.9956 29.7273C84.9956 28.563 84.6075 27.5546 83.8313 26.7112C83.0551 25.8587 82.1114 25.4095 81 25.3545ZM136 36.3545C137.111 36.2995 138.055 35.8503 138.831 35.0069C139.607 34.1635 139.996 33.1642 139.996 32C139.996 33.1642 140.384 34.1635 141.16 35.0069C141.936 35.8503 142.88 36.2903 144 36.3545C143.268 36.3911 142.598 36.602 141.98 37.0053C141.372 37.3995 140.886 37.9312 140.525 38.5913C140.172 39.2513 139.996 39.9572 139.996 40.7273C139.996 39.563 139.607 38.5546 138.831 37.7112C138.055 36.8587 137.111 36.4095 136 36.3545ZM101.831 49.0069C101.055 49.8503 100.111 50.2995 99 50.3545C100.111 50.4095 101.055 50.8587 101.831 51.7112C102.607 52.5546 102.996 53.563 102.996 54.7273C102.996 53.9572 103.172 53.2513 103.525 52.5913C103.886 51.9312 104.372 51.3995 104.98 51.0053C105.598 50.602 106.268 50.3911 107 50.3545C105.88 50.2903 104.936 49.8503 104.16 49.0069C103.384 48.1635 102.996 47.1642 102.996 46C102.996 47.1642 102.607 48.1635 101.831 49.0069Z" fill="currentColor"></path>
+                  </svg>
                 </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <label for="sort-select">Sort By:</label>
-                    <select id="sort-select">
-                        <option value="timestamp-desc">Newest First</option>
-                        <option value="timestamp-asc">Oldest First</option>
-                        <option value="url-asc">Link (A-Z)</option>
-                        <option value="url-desc">Link (Z-A)</option>
-                        <option value="description-asc">Description (A-Z)</option>
-                        <option value="description-desc">Description (Z-A)</option>
-                    </select>
+                <div class="theme-switch__circle-container">
+                  <div class="theme-switch__sun-moon-container">
+                    <div class="theme-switch__moon">
+                      <div class="theme-switch__spot"></div>
+                      <div class="theme-switch__spot"></div>
+                      <div class="theme-switch__spot"></div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </label>
+            <div class="data-management" id="data-management" style="display: none;">
+                <button id="export-btn" title="Export links to a local JSON file">⬇️ Export</button>
+                <button id="import-btn" title="Import links from a local JSON file (Note: Does not update Sheet)">⬆️ Import</button>
+            </div>
+            <!-- From Uiverse.io by Admin12121 -->
+            <div id="owner-login-btn" class="fire-container" title="Login to enable Add and Remove functionality">
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
             </div>
         </div>
-        <input type="text" id="search-input" placeholder="🔍 Search links, descriptions, or tags...">
+
+        <div class="input-section" id="owner-section" style="display:none;">
+            <h2>➕ Add New Link</h2>
+            <input type="url" id="link-input" placeholder="Paste link URL here (e.g., https://example.com)">
+            <div style="display: flex; gap: 10px;">
+                <select id="preset-tags">
+                    <option value="">Select Preset Tag</option>
+                    <option value="ai">AI</option>
+                    <option value="design">Design</option>
+                    <option value="graphics">Graphics</option>
+                    <option value="fitness">Fitness</option>
+                    <option value="tutorial">Tutorial</option>
+                    <option value="vectors">Vectors</option>
+                </select>
+                <input type="text" id="tags-input" placeholder="Or add custom tags (comma-separated)">
+            </div>
+            <textarea id="description-input" placeholder="Type/paste a short description" rows="2"></textarea>
+            <button id="add-link">Add Link to Cloud</button>
+        </div>
+
+        <hr>
+
+        <div class="filter-section">
+            <div class="controls">
+                <h2 id="link-counter">Saved Links (0)</h2>
+                <div class="sort-pagination-wrapper">
+                    <div class="pagination-controls" id="top-pagination-controls" style="display: none;">
+                        <button id="top-prev-btn" disabled>&lt;</button>
+                        <span id="top-page-info"></span>
+                        <button id="top-next-btn" disabled>&gt;</button>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="sort-select">Sort By:</label>
+                        <select id="sort-select">
+                            <option value="timestamp-desc">Newest First</option>
+                            <option value="timestamp-asc">Oldest First</option>
+                            <option value="url-asc">Link (A-Z)</option>
+                            <option value="url-desc">Link (Z-A)</option>
+                            <option value="description-asc">Description (A-Z)</option>
+                            <option value="description-desc">Description (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <input type="text" id="search-input" placeholder="🔍 Search links, descriptions, or tags...">
+        </div>
+
+        <div id="empty-message">No links loaded. Connect to API or add a link.</div>
+        <ul id="link-list"></ul>
+        <div class="pagination-controls" id="bottom-pagination-controls" style="display: none;">
+            <button id="prev-btn" disabled>&lt;</button>
+            <span id="page-info"></span>
+            <button id="next-btn" disabled>&gt;</button>
+        </div>
     </div>
 
-    <div id="empty-message">No links loaded. Connect to API or add a link.</div>
-    <ul id="link-list"></ul>
-    <div class="pagination-controls" id="bottom-pagination-controls" style="display: none;">
-        <button id="prev-btn" disabled>&lt;</button>
-        <span id="page-info"></span>
-        <button id="next-btn" disabled>&gt;</button>
+    <div class="loading-overlay" id="loading-overlay">
+        <svg class="loading-container" x="0px" y="0px" viewBox="0 0 40 40" height="40" width="40" preserveAspectRatio="xMidYMid meet">
+            <path class="track" fill="none" stroke-width="4" pathLength="100" d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z"></path>
+            <path class="car" fill="none" stroke-width="4" pathLength="100" d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z"></path>
+        </svg>
+        <span>Loading...</span>
     </div>
-</div>
 
-<div class="loading-overlay" id="loading-overlay">
-    <svg
-      class="loading-container"
-      x="0px"
-      y="0px"
-      viewBox="0 0 40 40"
-      height="40"
-      width="40"
-      preserveAspectRatio="xMidYMid meet">
-    <path
-      class="track"
-      fill="none"
-      stroke-width="4"
-      pathLength="100"
-      d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z">
-    </path>
-    <path
-      class="car"
-      fill="none"
-      stroke-width="4"
-      pathLength="100"
-      d="M29.760000000000005 18.72 c0 7.28 -3.9200000000000004 13.600000000000001 -9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.840000000000002 2.64 c -3.6 0 -6.88 -0.96 -9.76 -2.64 c0 -7.28 3.9200000000000004 -13.52 9.840000000000002 -16.96 c2.8800000000000003 -1.6800000000000002 6.24 -2.64 9.76 -2.64 S26.880000000000003 17.040000000000003 29.760000000000005 18.72 c5.84 3.3600000000000003 9.76 9.68 9.840000000000002 16.96 c -2.8800000000000003 1.6800000000000002 -6.24 2.64 -9.76 2.64 c -3.6 0 -6.88 -0.96 -9.840000000000002 -2.64 c -5.84 -3.3600000000000003 -9.76 -9.68 -9.76 -16.96 c0 -7.28 3.9200000000000004 -13.600000000000001 9.76 -16.96 C25.84 5.120000000000001 29.760000000000005 11.440000000000001 29.760000000000005 18.72z">
-    </path>
-    </svg>
-    <span>Loading...</span>
-</div>
-
-<script>
-    const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwu42OK2qwc_S_hf4MnAuakn03H4lALnCuAe_q_4-O2RLmF9IjD85UU24WJ4wR2Ospe/exec';
-
-    const linkList = document.getElementById('link-list');
-    const emptyMessage = document.getElementById('empty-message');
-    const searchInput = document.getElementById('search-input');
-    const sortSelect = document.getElementById('sort-select');
-    const linkCounter = document.getElementById('link-counter');
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const ownerLoginBtn = document.getElementById('owner-login-btn');
-    const ownerSection = document.getElementById('owner-section');
-    const linkInput = document.getElementById('link-input');
-    const descriptionInput = document.getElementById('description-input');
-    const tagsInput = document.getElementById('tags-input');
-    const presetTags = document.getElementById('preset-tags');
-    const addButton = document.getElementById('add-link');
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const dataManagement = document.getElementById('data-management');
-    const topPaginationControls = document.getElementById('top-pagination-controls');
-    const bottomPaginationControls = document.getElementById('bottom-pagination-controls');
-    const topPrevBtn = document.getElementById('top-prev-btn');
-    const topNextBtn = document.getElementById('top-next-btn');
-    const topPageInfo = document.getElementById('top-page-info');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const pageInfo = document.getElementById('page-info');
-    const body = document.body;
-    
-    let links = [];
-    let isOwner = false;
-    let ownerPassword = '';
-    let isEditing = false;
-    let editingRow = null;
-    let editingTimestamp = null;
-    const pageSize = 10;
-    let currentPage = 1;
-
-    function showLoading() {
-        loadingOverlay.style.display = 'flex';
-    }
-    function hideLoading() {
-        loadingOverlay.style.display = 'none';
-    }
-
-    function getDomain(url) {
-        try {
-            return new URL(url).hostname.replace('www.', '');
-        } catch(_) {
-            return 'Invalid URL';
-        }
-    }
-    function copyLink(url, btn) {
-        navigator.clipboard.writeText(url).then(() => {
-            const txt = btn.innerHTML;
-            btn.innerHTML = '✅';
-            setTimeout(() => btn.innerHTML = txt, 1000);
-        }).catch(() => alert('Failed to copy link.'));
-    }
-
-    ownerLoginBtn.onclick = () => {
-        if (isOwner) {
-            // Logout
-            isOwner = false;
-            ownerPassword = '';
-            ownerSection.style.display = 'none';
-            dataManagement.style.display = 'none';
-            renderLinks();
-            ownerLoginBtn.innerHTML = '🔑';
-            ownerLoginBtn.title = 'Login to enable Add and Remove functionality';
-            alert('Owner mode disabled.');
-        } else {
-            // Login
-            const password = prompt('Enter owner password:');
-            if (password && password.trim() !== '') {
-                ownerPassword = password.trim();
-                isOwner = true;
-                ownerSection.style.display = 'flex';
-                dataManagement.style.display = 'flex';
-                renderLinks();
-                ownerLoginBtn.innerHTML = 'Exit';
-                ownerLoginBtn.title = 'Logout to disable Add and Remove functionality';
-                alert('Owner mode enabled! You can now add and remove links.');
-            } else {
-                alert('Password required. Access denied.');
-            }
-        }
-    };
-
-    async function loadLinksFromSheet() {
-        showLoading();
-        try {
-            const res = await fetch(SHEET_API_URL + '?action=get');
-            if (!res.ok) throw new Error('Failed to fetch links');
-            const data = await res.json();
-            
-            if (Array.isArray(data)) {
-                links = data.map(item => ({
-                    row: item.row,
-                    id: item.id,
-                    url: item.url,
-                    description: item.description,
-                    tags: item.tags ? item.tags.split(',').map(t => t.trim()) : [],
-                    timestamp: parseInt(item.timestamp)
-                }));
-                currentPage = 1;
-                filterAndSortLinks();
-            }
-        } catch (err) { 
-            console.error('API Load Error:', err); 
-            emptyMessage.textContent = 'ERROR: Could not load data from Google Sheet API. Check Console.';
-            linkCounter.textContent = 'Saved Links (0)';
-            renderLinks([]);
-        } finally {
-            hideLoading();
-        }
-    }
-
-    async function addLinkToSheet(link) {
-        if (!isOwner || !ownerPassword) {
-            alert('Owner login required to add links.');
-            return;
-        }
-        showLoading();
-        try {
-            await fetch(SHEET_API_URL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ 
-                    action: 'post', 
-                    password: ownerPassword,  
-                    ...link 
-                }) 
-            });
-        } catch (err) { 
-            alert('Failed to add link to cloud. Check console.'); 
-            console.error(err); 
-        } finally {
-            hideLoading();
-        }
-    }
-
-    async function updateLinkToSheet(link) {
-        if (!isOwner || !ownerPassword) {
-            alert('Owner login required to update links.');
-            return;
-        }
-        showLoading();
-        try {
-            // Delete the old entry
-            await fetch(SHEET_API_URL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ 
-                    action: 'delete', 
-                    password: ownerPassword,  
-                    row: link.row 
-                }) 
-            });
-
-            // Add the new entry
-            const newId = Date.now().toString();
-            await fetch(SHEET_API_URL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ 
-                    action: 'post', 
-                    password: ownerPassword,  
-                    id: newId,
-                    url: link.url, 
-                    description: link.description, 
-                    tags: link.tags,
-                    timestamp: link.timestamp
-                }) 
-            });
-        } catch (err) { 
-            alert('Failed to update link to cloud. Check console.'); 
-            console.error(err); 
-        } finally {
-            hideLoading();
-        }
-    }
-
-    async function removeLinkFromSheet(row) {
-        if (!isOwner || !ownerPassword) {
-            alert('Owner login required to remove links.');
-            return;
-        }
-        if (!confirm('Are you sure you want to remove this link? This action is permanent.')) return;
-        showLoading();
-        try {
-            await fetch(SHEET_API_URL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ 
-                    action: 'delete', 
-                    password: ownerPassword,  
-                    row 
-                }) 
-            });
-        } catch (err) { 
-            alert('Failed to remove link from cloud. Check console.'); 
-            console.error(err); 
-        } finally {
-            hideLoading();
-        }
-    }
-
-    function renderLinks(currentLinks) {
-        linkList.innerHTML = '';
-        
-        if (currentLinks.length === 0) { 
-            return; 
-        }
-        
-        currentLinks.forEach(linkObj => {
-            const li = document.createElement('li');
-            li.className = 'link-item';
-            const tagsHtml = linkObj.tags.map(tag => `<span class="tag" data-filter-tag="${tag}">${tag}</span>`).join('');
-            let displayUrl = linkObj.url.replace(/^https?:\/\//i, '').replace(/\/$/, '');
-            displayUrl = displayUrl.replace(/^www\./i, '');
-            
-            li.innerHTML = `
-                <div class="link-details">
-                    <div class="link-domain">${linkObj.url}</div>
-                    <a href="${linkObj.url}" target="_blank" rel="noopener noreferrer" class="link-url">${displayUrl}</a>
-                    <p class="link-description">${linkObj.description}</p>
-                    <div class="link-tags">${tagsHtml}</div>
-                </div>
-                <div class="link-actions">
-                    <button class="copy-btn" data-url="${linkObj.url}" title="Copy Link URL">📋</button>
-                    ${isOwner ? `<button class="edit-btn" data-row="${linkObj.row}" title="Edit link">Edit</button>` : ''}
-                    ${isOwner ? `<button class="remove-btn" data-row="${linkObj.row}" title="Remove permanently">Remove</button>` : ''}
-                </div>
-            `;
-            linkList.appendChild(li);
-        });
-        attachEventListeners();
-    }
-
-    function attachEventListeners() {
-        document.querySelectorAll('.copy-btn').forEach(btn => btn.onclick = e => copyLink(e.target.dataset.url, e.target));
-        
-        if (isOwner) {
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    const row = parseInt(e.target.dataset.row);
-                    const editingLink = links.find(l => l.row === row);
-                    if (editingLink) {
-                        isEditing = true;
-                        editingRow = row;
-                        editingTimestamp = editingLink.timestamp;
-                        linkInput.value = editingLink.url;
-                        descriptionInput.value = editingLink.description;
-                        tagsInput.value = editingLink.tags.join(', ');
-                        addButton.textContent = 'Update Link';
-                        presetTags.value = '';
-                        ownerSection.scrollIntoView({ behavior: 'smooth' });
-                    }
-                };
-            });
-            
-            document.querySelectorAll('.remove-btn').forEach(btn => {
-                btn.onclick = async (e) => {
-                    const row = parseInt(e.target.dataset.row);
-                    await removeLinkFromSheet(row);
-                    setTimeout(() => loadLinksFromSheet(), 500);
-                };
-            });
-        }
-        
-        document.querySelectorAll('.tag').forEach(tag => { 
-            tag.onclick = e => { 
-                searchInput.value = e.target.dataset.filterTag; 
-                currentPage = 1;
-                filterAndSortLinks(); 
-            }; 
-        });
-    }
-
-    function updatePagination(filteredTotal) {
-        const totalPages = Math.ceil(filteredTotal / pageSize);
-        topPageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-        topPrevBtn.disabled = currentPage <= 1;
-        prevBtn.disabled = currentPage <= 1;
-        topNextBtn.disabled = currentPage >= totalPages;
-        nextBtn.disabled = currentPage >= totalPages;
-        topPaginationControls.style.display = filteredTotal > pageSize ? 'flex' : 'none';
-        bottomPaginationControls.style.display = filteredTotal > pageSize ? 'flex' : 'none';
-    }
-
-    addButton.onclick = async () => {
-        const url = linkInput.value.trim();
-        const desc = descriptionInput.value.trim() || 'No description';
-        const tagsStr = tagsInput.value.split(',').map(t => t.trim().toLowerCase()).filter(t => t).join(',');
-        
-        if (!url) { 
-            alert('Enter a URL'); 
-            return; 
-        }
-        
-        try {
-            new URL(url);
-        } catch {
-            alert('Invalid URL. Please enter a valid URL starting with http:// or https://');
-            return;
-        }
-        
-        const newLink = { 
-            url, 
-            description: desc, 
-            tags: tagsStr, 
-            timestamp: Date.now() 
-        };
-        
-        if (isEditing) {
-            newLink.timestamp = editingTimestamp;
-            newLink.row = editingRow;
-            await updateLinkToSheet(newLink);
-            isEditing = false;
-            editingRow = null;
-            editingTimestamp = null;
-            addButton.textContent = 'Add Link to Cloud';
-        } else {
-            newLink.id = Date.now().toString();
-            await addLinkToSheet(newLink);
-        }
-        
-        // Clear inputs
-        linkInput.value = ''; 
-        descriptionInput.value = ''; 
-        tagsInput.value = '';
-        presetTags.value = '';
-        
-        setTimeout(() => loadLinksFromSheet(), 1000);
-    };
-
-    presetTags.onchange = () => {
-        const selected = presetTags.value;
-        if (selected) {
-            const current = tagsInput.value.trim();
-            const separator = current ? ', ' : '';
-            tagsInput.value = current + separator + selected;
-            presetTags.value = '';  
-        }
-    };
-
-    searchInput.oninput = () => {
-        currentPage = 1;
-        filterAndSortLinks();
-    };
-    
-    sortSelect.onchange = () => {
-        currentPage = 1;
-        filterAndSortLinks();
-    };
-
-    function filterAndSortLinks() {
-        let filtered = links; 
-        const term = searchInput.value.toLowerCase().trim(); 
-        const sort = sortSelect.value;
-        
-        if (term) { 
-            filtered = links.filter(l =>
-                l.description.toLowerCase().includes(term) ||
-                l.url.toLowerCase().includes(term) ||
-                l.tags.some(tag => tag.includes(term))
-            ); 
-        }
-        
-        filtered.sort((a, b) => {
-            switch (sort) {
-                case 'timestamp-desc': return b.timestamp - a.timestamp;
-                case 'timestamp-asc': return a.timestamp - b.timestamp;
-                case 'url-asc': return a.url.localeCompare(b.url);
-                case 'url-desc': return b.url.localeCompare(a.url);
-                case 'description-asc': return a.description.localeCompare(b.description);
-                case 'description-desc': return b.description.localeCompare(a.description);
-                default: return b.timestamp - a.timestamp;
-            }
-        });
-
-        const filteredTotal = filtered.length;
-        
-        if (filteredTotal === 0) {
-            emptyMessage.style.display = 'block';
-            emptyMessage.textContent = links.length > 0 ? "No results found." : "No links loaded. Connect to API or add a link.";
-            linkCounter.textContent = `Saved Links (${links.length})`;
-            linkList.innerHTML = '';
-            topPaginationControls.style.display = 'none';
-            bottomPaginationControls.style.display = 'none';
-            return;
-        }
-        
-        const maxPage = Math.ceil(filteredTotal / pageSize);
-        if (currentPage > maxPage) currentPage = maxPage;
-        
-        const startIdx = (currentPage - 1) * pageSize;
-        const paginated = filtered.slice(startIdx, startIdx + pageSize);
-        
-        const showingStart = startIdx + 1;
-        const showingEnd = Math.min(startIdx + paginated.length, filteredTotal);
-        
-        linkCounter.textContent = `Saved Links (${filteredTotal}) | Showing ${showingStart} - ${showingEnd} of ${filteredTotal}`;
-        emptyMessage.style.display = 'none';
-        
-        renderLinks(paginated);
-        updatePagination(filteredTotal);
-    }
-
-    function goToPreviousPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            filterAndSortLinks();
-        }
-    }
-
-    function goToNextPage() {
-        currentPage++;
-        filterAndSortLinks();
-    }
-
-    topPrevBtn.onclick = goToPreviousPage;
-    prevBtn.onclick = goToPreviousPage;
-    topNextBtn.onclick = goToNextPage;
-    nextBtn.onclick = goToNextPage;
-
-    darkModeToggle.onclick = () => { 
-        body.classList.toggle('dark-mode'); 
-        localStorage.setItem('darkMode', body.classList.contains('dark-mode') ? 'enabled' : 'disabled'); 
-    };
-    if (localStorage.getItem('darkMode') === 'enabled') body.classList.add('dark-mode');
-
-    document.getElementById('export-btn').onclick = () => {
-        const dataStr = JSON.stringify(links, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-        const a = document.createElement('a'); 
-        a.setAttribute('href', dataUri); 
-        a.setAttribute('download', 'link_organizer_backup.json'); 
-        a.click();
-        alert(`Successfully exported ${links.length} links.`);
-    };
-    document.getElementById('import-btn').onclick = () => { 
-        const backupData = prompt('Paste your Link Organizer backup JSON data here:');
-        if (!backupData) return;
-        
-        try {
-            const importedLinks = JSON.parse(backupData);
-            if (Array.isArray(importedLinks)) {
-                links = importedLinks.map(link => ({
-                    ...link, 
-                    tags: Array.isArray(link.tags) ? link.tags : (link.tags ? link.tags.split(',').map(t => t.trim()) : [])
-                }));
-                currentPage = 1;
-                filterAndSortLinks();
-                alert(`Successfully imported ${links.length} links for local viewing.`);
-            } else {
-                throw new Error('Invalid JSON format.');
-            }
-        } catch (e) {
-            alert('Import failed! Please ensure the data is valid JSON.');
-        }
-    };
-
-    window.addEventListener('beforeunload', () => { ownerPassword = ''; });
-
-    loadLinksFromSheet();
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
