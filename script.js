@@ -42,34 +42,26 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingOverlay.style.display = 'none';
     }
 
-    function getDomain(url) {
-        try {
-            return new URL(url).hostname.replace('www.', '');
-        } catch(_) {
-            return 'Invalid URL';
-        }
-    }
     function copyLink(url, btn) {
         navigator.clipboard.writeText(url).then(() => {
-            const txt = btn.innerHTML;
-            btn.innerHTML = '✅';
-            setTimeout(() => btn.innerHTML = txt, 1000);
+            const text = btn.querySelector('.text');
+            const original = text.textContent;
+            text.textContent = 'COPIED!';
+            setTimeout(() => text.textContent = original, 1000);
         }).catch(() => alert('Failed to copy link.'));
     }
 
     ownerLoginBtn.onclick = () => {
         if (isOwner) {
-            // Logout
             isOwner = false;
             ownerPassword = '';
             ownerSection.style.display = 'none';
             dataManagement.style.display = 'none';
             renderLinks();
-            ownerLoginBtn.innerHTML = '🔑';
+            ownerLoginBtn.innerHTML = 'Key';
             ownerLoginBtn.title = 'Login to enable Add and Remove functionality';
             alert('Owner mode disabled.');
         } else {
-            // Login
             const password = prompt('Enter owner password:');
             if (password && password.trim() !== '') {
                 ownerPassword = password.trim();
@@ -147,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         showLoading();
         try {
-            // Delete the old entry
             await fetch(SHEET_API_URL, { 
                 method: 'POST', 
                 mode: 'no-cors', 
@@ -159,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }) 
             });
 
-            // Add the new entry
             const newId = Date.now().toString();
             await fetch(SHEET_API_URL, { 
                 method: 'POST', 
@@ -231,7 +221,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="link-tags">${tagsHtml}</div>
                 </div>
                 <div class="link-actions">
-                    <button class="copy-btn" data-url="${linkObj.url}" title="Copy Link URL">📋</button>
+                    <button class="Btn copy-btn" data-url="${linkObj.url}">
+                      <svg viewBox="0 0 512 512" class="svgIcon" height="1em"><path d="M288 448H64V224h64V160H64c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H288c35.3 0 64-28.7 64-64V384H288v64zm-64-96H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H224c-35.3 0-64 28.7-64 64V288c0 35.3 28.7 64 64 64z"></path></svg>
+                      <p class="text">COPY</p>
+                      <span class="effect"></span>
+                    </button>
                     ${isOwner ? `<button class="edit-btn" data-row="${linkObj.row}" title="Edit link">Edit</button>` : ''}
                     ${isOwner ? `<button class="remove-btn" data-row="${linkObj.row}" title="Remove permanently">Remove</button>` : ''}
                 </div>
@@ -242,7 +236,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function attachEventListeners() {
-        document.querySelectorAll('.copy-btn').forEach(btn => btn.onclick = e => copyLink(e.target.dataset.url, e.target));
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.onclick = e => copyLink(e.currentTarget.dataset.url, e.currentTarget);
+        });
         
         if (isOwner) {
             document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -330,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function() {
             await addLinkToSheet(newLink);
         }
         
-        // Clear inputs
         linkInput.value = ''; 
         descriptionInput.value = ''; 
         tagsInput.value = '';
@@ -429,7 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
     topNextBtn.onclick = goToNextPage;
     nextBtn.onclick = goToNextPage;
 
-    // Updated dark mode toggle logic
     darkModeToggle.addEventListener('change', () => { 
         body.classList.toggle('dark-mode', darkModeToggle.checked); 
         localStorage.setItem('darkMode', darkModeToggle.checked ? 'enabled' : 'disabled'); 
@@ -448,6 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
         a.click();
         alert(`Successfully exported ${links.length} links.`);
     };
+
     document.getElementById('import-btn').onclick = () => { 
         const backupData = prompt('Paste your Link Organizer backup JSON data here:');
         if (!backupData) return;

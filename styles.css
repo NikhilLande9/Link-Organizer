@@ -79,14 +79,13 @@ button#add-link:hover { background-color: #0056b3; }
     flex-grow: 1; 
 }
 
-/* Fire Container for Owner Button */
 .fire-container {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 36px;
+    height: 36px;
     opacity: 0.7;
     transition: opacity 0.2s;
     flex-shrink: 0;
@@ -96,6 +95,7 @@ button#add-link:hover { background-color: #0056b3; }
 }
 .theme-switch {
     flex-shrink: 0;
+    --toggle-size: 18px;
 }
     
 .link-item { 
@@ -134,29 +134,84 @@ button#add-link:hover { background-color: #0056b3; }
     display: flex;
     justify-content: flex-end; 
     gap: 8px;
+    align-items: center;
 }
-.link-actions button { 
-    padding: 7px 10px;
-    font-size: 0.85em; 
-}
-.copy-btn { 
-    background-color: #28a745; 
-    color: white; 
-    min-width: 35px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-}
-.copy-btn:hover { background-color: #218838; }
 .edit-btn { 
     background-color: #ffc107; 
     color: #212529; 
+    padding: 6px 9px;
+    font-size: 0.8em; 
 }
 .edit-btn:hover { 
     background-color: #e0a800; 
 }
-.remove-btn { background-color: #dc3545; color: white; }
+.remove-btn { 
+    background-color: #dc3545; 
+    color: white; 
+    padding: 6px 9px;
+    font-size: 0.8em; 
+}
 .remove-btn:hover { background-color: #c82333; }
+
+.Btn {
+  width: 80px;
+  height: 32px;
+  background-color: rgb(65, 64, 64);
+  border: none;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.342);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+  transition-duration: .5s;
+  font-size: 0.85em;
+}
+.Btn .text {
+  color: rgb(184, 236, 104);
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  z-index: 2;
+}
+.Btn .svgIcon {
+  z-index: 2;
+  width: 1.1em;
+  height: 1.1em;
+}
+.Btn .svgIcon path {
+  fill: rgb(184, 236, 104);
+}
+.Btn .effect {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: rgb(184, 236, 104);
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0;
+  transition-duration: .5s;
+}
+.Btn:hover .effect {
+  transform: scale(15);
+  transform-origin: center;
+  opacity: 1;
+  transition-duration: .5s;
+}
+.Btn:hover {
+  box-shadow: 0px 0px 4px rgb(184, 236, 104),
+              0px 0px 8px rgb(184, 236, 104),
+              0px 0px 20px rgb(184, 236, 104);
+  transition-duration: .7s;
+}
+.Btn:hover .text {
+  color: rgb(65, 64, 64);
+}
+.Btn:hover .svgIcon path {
+  fill: rgb(65, 64, 64);
+}
 
 .controls { 
     display: flex; 
@@ -200,7 +255,6 @@ button#add-link:hover { background-color: #0056b3; }
     margin: 0;
 }
 
-/* Loading Spinner */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -276,7 +330,6 @@ body.dark-mode .edit-btn { background-color: #e0a800; color: #212529; }
 body.dark-mode .edit-btn:hover { background-color: #d39e00; }
 
 @media (min-width: 768px) {
-    
     body { padding: 20px; }
     .container { 
         padding: 25px;
@@ -284,7 +337,6 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
     }
     h1 { font-size: 2.2em; }
     h2 { font-size: 1.4em; }
-
     .top-controls { 
         gap: 15px;
     }
@@ -292,7 +344,6 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
         margin-left: 8px !important;
         flex-grow: 0;
     }
-
     .controls { 
         flex-direction: row; 
         justify-content: space-between;
@@ -306,7 +357,6 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
         justify-content: flex-end;
         gap: 20px;
     }
-
     .link-item { 
         flex-direction: row;
         align-items: center; 
@@ -319,7 +369,6 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
     }
     .link-url { font-size: 1em; }
     .link-description { font-size: 0.9em; }
-
     .link-actions {
         width: 30%; 
         justify-content: flex-end;
@@ -331,35 +380,45 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
     }
 }
 
-/* Responsive adjustments for small screens */
 @media (max-width: 767px) {
     .top-controls {
         gap: 5px;
         padding: 8px;
     }
-    .theme-switch {
-        --toggle-size: 20px;
-    }
     .fire-container {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
+    }
+    .Btn {
+        width: 100%;
+        height: 38px;
+        font-size: 1em;
+        border-radius: 6px;
+    }
+    .Btn .svgIcon {
+        width: 1.3em;
+        height: 1.3em;
+    }
+    .link-actions {
+        gap: 6px;
+        margin-top: 8px;
+    }
+    .edit-btn, .remove-btn {
+        flex: 1;
+        font-size: 0.85em;
+        padding: 8px 10px;
     }
 }
 
-/* From Uiverse.io by Galahhad */
 .theme-switch {
-  --toggle-size: 24px;
-  /* the size is adjusted using font-size,
-     this is not transform scale,
-     so you can choose any size */
-  --container-width: 5.625em;
-  --container-height: 2.5em;
-  --container-radius: 6.25em;
-  /* radius 0 - minecraft mode :) */
+  --toggle-size: 18px;
+  --container-width: 4.5em;
+  --container-height: 2em;
+  --container-radius: 5em;
   --container-light-bg: #3D7EAE;
   --container-night-bg: #1D1F2C;
-  --circle-container-diameter: 3.375em;
-  --sun-moon-diameter: 2.125em;
+  --circle-container-diameter: 2.7em;
+  --sun-moon-diameter: 1.7em;
   --sun-bg: #ECCA2F;
   --moon-bg: #C4C9D1;
   --spot-color: #959DB1;
@@ -456,37 +515,37 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
 }
 .theme-switch__spot {
   position: absolute;
-  top: 0.75em;
-  left: 0.312em;
-  width: 0.75em;
-  height: 0.75em;
+  top: 0.6em;
+  left: 0.25em;
+  width: 0.6em;
+  height: 0.6em;
   border-radius: var(--container-radius);
   background-color: var(--spot-color);
   -webkit-box-shadow: 0em 0.0312em 0.062em rgba(0, 0, 0, 0.25) inset;
   box-shadow: 0em 0.0312em 0.062em rgba(0, 0, 0, 0.25) inset;
 }
 .theme-switch__spot:nth-of-type(2) {
-  width: 0.375em;
-  height: 0.375em;
-  top: 0.937em;
-  left: 1.375em;
+  width: 0.3em;
+  height: 0.3em;
+  top: 0.75em;
+  left: 1.1em;
 }
 .theme-switch__spot:nth-last-of-type(3) {
-  width: 0.25em;
-  height: 0.25em;
-  top: 0.312em;
-  left: 0.812em;
+  width: 0.2em;
+  height: 0.2em;
+  top: 0.25em;
+  left: 0.65em;
 }
 .theme-switch__clouds {
-  width: 1.25em;
-  height: 1.25em;
+  width: 1em;
+  height: 1em;
   background-color: var(--clouds-color);
   border-radius: var(--container-radius);
   position: absolute;
-  bottom: -0.625em;
-  left: 0.312em;
-  -webkit-box-shadow: 0.937em 0.312em var(--clouds-color), -0.312em -0.312em var(--back-clouds-color), 1.437em 0.375em var(--clouds-color), 0.5em -0.125em var(--back-clouds-color), 2.187em 0 var(--clouds-color), 1.25em -0.062em var(--back-clouds-color), 2.937em 0.312em var(--clouds-color), 2em -0.312em var(--back-clouds-color), 3.625em -0.062em var(--clouds-color), 2.625em 0em var(--back-clouds-color), 4.5em -0.312em var(--clouds-color), 3.375em -0.437em var(--back-clouds-color), 4.625em -1.75em 0 0.437em var(--clouds-color), 4em -0.625em var(--back-clouds-color), 4.125em -2.125em 0 0.437em var(--back-clouds-color);
-  box-shadow: 0.937em 0.312em var(--clouds-color), -0.312em -0.312em var(--back-clouds-color), 1.437em 0.375em var(--clouds-color), 0.5em -0.125em var(--back-clouds-color), 2.187em 0 var(--clouds-color), 1.25em -0.062em var(--back-clouds-color), 2.937em 0.312em var(--clouds-color), 2em -0.312em var(--back-clouds-color), 3.625em -0.062em var(--clouds-color), 2.625em 0em var(--back-clouds-color), 4.5em -0.312em var(--clouds-color), 3.375em -0.437em var(--back-clouds-color), 4.625em -1.75em 0 0.437em var(--clouds-color), 4em -0.625em var(--back-clouds-color), 4.125em -2.125em 0 0.437em var(--back-clouds-color);
+  bottom: -0.5em;
+  left: 0.25em;
+  -webkit-box-shadow: 0.75em 0.25em var(--clouds-color), -0.25em -0.25em var(--back-clouds-color), 1.15em 0.3em var(--clouds-color), 0.4em -0.1em var(--back-clouds-color), 1.75em 0 var(--clouds-color), 1em -0.05em var(--back-clouds-color), 2.35em 0.25em var(--clouds-color), 1.6em -0.25em var(--back-clouds-color), 2.9em -0.05em var(--clouds-color), 2.1em 0em var(--back-clouds-color), 3.6em -0.25em var(--clouds-color), 2.7em -0.35em var(--back-clouds-color), 3.7em -1.4em 0 0.35em var(--clouds-color), 3.2em -0.5em var(--back-clouds-color), 3.3em -1.7em 0 0.35em var(--clouds-color);
+  box-shadow: 0.75em 0.25em var(--clouds-color), -0.25em -0.25em var(--back-clouds-color), 1.15em 0.3em var(--clouds-color), 0.4em -0.1em var(--back-clouds-color), 1.75em 0 var(--clouds-color), 1em -0.05em var(--back-clouds-color), 2.35em 0.25em var(--clouds-color), 1.6em -0.25em var(--back-clouds-color), 2.9em -0.05em var(--clouds-color), 2.1em 0em var(--back-clouds-color), 3.6em -0.25em var(--clouds-color), 2.7em -0.35em var(--back-clouds-color), 3.7em -1.4em 0 0.35em var(--clouds-color), 3.2em -0.5em var(--back-clouds-color), 3.3em -1.7em 0 0.35em var(--clouds-color);
   -webkit-transition: 0.5s cubic-bezier(0, -0.02, 0.4, 1.25);
   -o-transition: 0.5s cubic-bezier(0, -0.02, 0.4, 1.25);
   transition: 0.5s cubic-bezier(0, -0.02, 0.4, 1.25);
@@ -495,14 +554,13 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   position: absolute;
   color: var(--stars-color);
   top: -100%;
-  left: 0.312em;
-  width: 2.75em;
+  left: 0.25em;
+  width: 2.2em;
   height: auto;
   -webkit-transition: var(--transition);
   -o-transition: var(--transition);
   transition: var(--transition);
 }
-/* actions */
 .theme-switch__checkbox:checked + .theme-switch__container {
   background-color: var(--container-night-bg);
 }
@@ -510,10 +568,10 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   left: calc(100% - var(--circle-container-offset) - var(--circle-container-diameter));
 }
 .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__circle-container:hover {
-  left: calc(100% - var(--circle-container-offset) - var(--circle-container-diameter) - 0.187em)
+  left: calc(100% - var(--circle-container-offset) - var(--circle-container-diameter) - 0.15em)
 }
 .theme-switch__circle-container:hover {
-  left: calc(var(--circle-container-offset) + 0.187em);
+  left: calc(var(--circle-container-offset) + 0.15em);
 }
 .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__moon {
   -webkit-transform: translate(0);
@@ -521,7 +579,7 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   transform: translate(0);
 }
 .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__clouds {
-  bottom: -4.062em;
+  bottom: -3.25em;
 }
 .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__stars-container {
   top: 50%;
@@ -530,7 +588,6 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   transform: translateY(-50%);
 }
 
-/* From Uiverse.io by Admin12121 */
 @keyframes scaleUpDown {
   0%, 100% {
     transform: scaleY(1) scaleX(1);
@@ -587,9 +644,7 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   position: absolute;
   height: 100%;
   width: 100%;
-  animation: scaleUpDown 3s ease-out;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: scaleUpDown 3s ease-out infinite;
 }
 .fire-center .main-fire {
   position: absolute;
@@ -609,17 +664,13 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   background-color: #ef5a00;
   border-radius: 50%;
   filter: drop-shadow(0 0 10px #d43322);
-  animation: particleUp 2s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: particleUp 2s ease-out 0s infinite;
 }
 .fire-right {
   height: 100%;
   width: 100%;
   position: absolute;
-  animation: shake 2s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: shake 2s ease-out 0s infinite;
 }
 .fire-right .main-fire {
   position: absolute;
@@ -642,17 +693,13 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   transform: scaleX(0.8) rotate(45deg);
   border-radius: 50%;
   filter: drop-shadow(0 0 10px #d43322);
-  animation: particleUp 2s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: particleUp 2s ease-out 0s infinite;
 }
 .fire-left {
   position: absolute;
   height: 100%;
   width: 100%;
-  animation: shake 3s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: shake 3s ease-out 0s infinite;
 }
 .fire-left .main-fire {
   position: absolute;
@@ -674,8 +721,7 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   background-color: #ef5a00;
   border-radius: 50%;
   filter: drop-shadow(0 0 10px #d43322);
-  animation: particleUp 3s infinite ease-out 0;
-  animation-fill-mode: both;
+  animation: particleUp 3s infinite ease-out 0s;
 }
 .fire-bottom .main-fire {
   position: absolute;
@@ -687,7 +733,5 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   transform: scaleX(0.8) rotate(45deg);
   border-radius: 0 40% 100% 40%;
   filter: blur(10px);
-  animation: glow 2s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: glow 2s ease-out 0s infinite;
 }
