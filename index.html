@@ -82,12 +82,24 @@
                 <h2 id="link-counter">Saved Links (0)</h2>
                 <div class="sort-pagination-wrapper">
                     <div class="pagination-controls" id="top-pagination-controls" style="display: none;">
-                        <button id="top-prev-btn" disabled>Previous</button>
+                        <button class="button-3d" id="top-prev-btn" disabled>
+                            <div class="button-top">
+                                <span>❮</span>
+                            </div>
+                            <div class="button-bottom"></div>
+                            <div class="button-base"></div>
+                        </button>
                         <span id="top-page-info"></span>
-                        <button id="top-next-btn" disabled>Next</button>
+                        <button class="button-3d" id="top-next-btn" disabled>
+                            <div class="button-top">
+                                <span>❯</span>
+                            </div>
+                            <div class="button-bottom"></div>
+                            <div class="button-base"></div>
+                        </button>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <label for="sort-select">Sort By:</label>
+                        <label for="sort-select">Sort:</label>
                         <select id="sort-select">
                             <option value="timestamp-desc">Newest First</option>
                             <option value="timestamp-asc">Oldest First</option>
@@ -105,9 +117,21 @@
         <div id="empty-message">No links loaded. Connect to API or add a link.</div>
         <ul id="link-list"></ul>
         <div class="pagination-controls" id="bottom-pagination-controls" style="display: none;">
-            <button id="prev-btn" disabled>Previous</button>
+            <button class="button-3d" id="prev-btn" disabled>
+                <div class="button-top">
+                    <span>❮</span>
+                </div>
+                <div class="button-bottom"></div>
+                <div class="button-base"></div>
+            </button>
             <span id="page-info"></span>
-            <button id="next-btn" disabled>Next</button>
+            <button class="button-3d" id="next-btn" disabled>
+                <div class="button-top">
+                    <span>❯</span>
+                </div>
+                <div class="button-bottom"></div>
+                <div class="button-base"></div>
+            </button>
         </div>
     </div>
 

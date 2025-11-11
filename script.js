@@ -279,8 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updatePagination(filteredTotal) {
         const totalPages = Math.ceil(filteredTotal / pageSize);
-        topPageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        topPageInfo.textContent = `${currentPage}/${totalPages}`;
+        pageInfo.textContent = `Page ${currentPage} / ${totalPages} `;
         topPrevBtn.disabled = currentPage <= 1;
         prevBtn.disabled = currentPage <= 1;
         topNextBtn.disabled = currentPage >= totalPages;
