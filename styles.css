@@ -320,9 +320,9 @@ button#add-link:hover { background-color: #0056b3; }
     font-size: 0.9em;
     min-width: 40px;
 }
-@import url('https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Metamorphous&display=swap');
 h1 {
-  font-family: "Macondo Swash Caps", cursive;
+  font-family: "Metamorphous", serif;
   font-weight: 400;
   font-style: normal;
 }
