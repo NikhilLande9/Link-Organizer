@@ -276,7 +276,7 @@ button#add-link:hover { background-color: #0056b3; }
   transition-duration: .5s;
 }
 .Btn:hover .effect {
-  transform: scale(15);
+  transform: scale(50);
   transform-origin: center;
   opacity: 1;
   transition-duration: .5s;
