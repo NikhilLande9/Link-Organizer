@@ -9,7 +9,7 @@
   border: none;
   outline: none;
   border-radius: 9999px;
-  color: #fff;                         /* default dark-mode text */
+  color: #d6b23cff;                         /* default dark-mode text */
   background-color: rgba(255, 255, 255, 0.08);
   box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
@@ -22,7 +22,7 @@
 
 /* DARK MODE – placeholder */
 body.dark-mode .input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(212, 183, 53, 0.5);
 }
 
 /* -------------------------------------------------------------
