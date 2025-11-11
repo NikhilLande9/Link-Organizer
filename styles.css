@@ -276,6 +276,27 @@ button#add-link:hover { background-color: #0056b3; }
     min-width: 40px;
 }
 
+/* -------------------------------------------------------------
+   MOBILE PAGINATION – top left, bottom centre
+   ------------------------------------------------------------- */
+@media (max-width: 767px) {
+  /* TOP pagination (above the list) */
+  #top-pagination-controls {
+    justify-content: flex-start !important;   /* left-aligned */
+    margin-left: 0;
+  }
+
+  /* BOTTOM pagination (below the list) */
+  #bottom-pagination-controls {
+    justify-content: center !important;       /* centred */
+  }
+
+  /* Make the wrapper stretch full-width so centre works */
+  .sort-pagination-wrapper {
+    justify-content: space-between !important;
+  }
+}
+
 #empty-message {
     text-align: center;
     padding: 20px;
