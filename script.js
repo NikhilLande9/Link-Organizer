@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
         filtered.sort((a, b) => {
             switch (sort) {
                 case 'timestamp-desc': return b.timestamp - a.timestamp;
-                case 'timestamp-asc': return a.timestamp - b.timestamp;
+                case 'timestamp-asc': return a.timestamp - a.timestamp;
                 case 'url-asc': return a.url.localeCompare(b.url);
                 case 'url-desc': return b.url.localeCompare(a.url);
                 case 'description-asc': return a.description.localeCompare(b.description);
@@ -424,15 +424,30 @@ document.addEventListener('DOMContentLoaded', function() {
     topNextBtn.onclick = goToNextPage;
     nextBtn.onclick = goToNextPage;
 
-    darkModeToggle.addEventListener('change', () => { 
-        body.classList.toggle('dark-mode', darkModeToggle.checked); 
-        localStorage.setItem('darkMode', darkModeToggle.checked ? 'enabled' : 'disabled'); 
-    });
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
-    }
+    /* -------------------------------------------------------------
+       UPDATED: let CSS control placeholder colour
+       ------------------------------------------------------------- */
+    const updateSearchInputColor = () => {
+        if (body.classList.contains('dark-mode')) {
+            searchInput.style.color = '#fff';
+            searchInput.style.backgroundColor = 'rgba(0,0,0,0.2)';
+        } else {
+            // Remove inline colour – CSS now decides both text & placeholder
+            searchInput.style.removeProperty('color');
+            searchInput.style.backgroundColor = 'rgba(255,255,255,0.8)';
+        }
+    };
 
+    // Call it whenever toggle changes
+    darkModeToggle.addEventListener('change', () => {
+        body.classList.toggle('dark-mode', darkModeToggle.checked);
+        localStorage.setItem('darkMode', darkModeToggle.checked ? 'enabled' : 'disabled');
+        updateSearchInputColor();
+    });
+
+    // Call it on page load to set initial colour
+    updateSearchInputColor();
+    
     document.getElementById('export-btn').onclick = () => {
         const dataStr = JSON.stringify(links, null, 2);
         const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);

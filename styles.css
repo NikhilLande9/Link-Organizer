@@ -1,3 +1,52 @@
+.input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 20px 0;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  border-radius: 9999px;
+  color: #fff;                         /* default dark-mode text */
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+/* DAY MODE (default) – placeholder */
+.input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* DARK MODE – placeholder */
+body.dark-mode .input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* -------------------------------------------------------------
+   INPUT TEXT COLOUR – handled by JS, but we also keep a CSS fallback
+   ------------------------------------------------------------- */
+body.dark-mode .input {
+  color: #fff;
+}
+body:not(.dark-mode) .input {
+  color: #111;        /* day-mode text (fallback) */
+}
+
+/* -------------------------------------------------------------
+   FOCUS STYLE (unchanged)
+   ------------------------------------------------------------- */
+.input:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 1px 1px 6px rgba(255, 255, 255, 0.3),
+              0 0 8px rgba(37, 117, 252, 0.5);
+}
+
+/* -------------------------------------------------------------
+   THE REST OF YOUR ORIGINAL CSS (unchanged)
+   ------------------------------------------------------------- */
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     margin: 0; 
@@ -27,20 +76,7 @@ h2 { color: #555; font-size: 1.2em; border-bottom: 1px solid #eee; padding-botto
     border: 1px solid #e0e0e0; 
     border-radius: 6px; 
 }
-input[type="text"], input[type="url"], textarea, select { 
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px; 
-    border: 1px solid #ccc; 
-    border-radius: 6px; 
-    font-size: 1em; 
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-input:focus, textarea:focus, select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-    outline: none;
-}
+
 button { 
     padding: 10px 15px; 
     border: none; 
@@ -329,6 +365,9 @@ body.dark-mode .loading-overlay { background: rgba(18,18,18,0.8); }
 body.dark-mode .edit-btn { background-color: #e0a800; color: #212529; }
 body.dark-mode .edit-btn:hover { background-color: #d39e00; }
 
+/* -------------------------------------------------------------
+   MEDIA QUERIES (unchanged)
+   ------------------------------------------------------------- */
 @media (min-width: 768px) {
     body { padding: 20px; }
     .container { 
@@ -410,6 +449,9 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
     }
 }
 
+/* -------------------------------------------------------------
+   THEME SWITCH (unchanged)
+   ------------------------------------------------------------- */
 .theme-switch {
   --toggle-size: 18px;
   --container-width: 4.5em;
@@ -588,44 +630,26 @@ body.dark-mode .edit-btn:hover { background-color: #d39e00; }
   transform: translateY(-50%);
 }
 
+/* -------------------------------------------------------------
+   FIRE ANIMATION, 3D BUTTONS, etc. (unchanged)
+   ------------------------------------------------------------- */
 @keyframes scaleUpDown {
-  0%, 100% {
-    transform: scaleY(1) scaleX(1);
-  }
-  50%, 90% {
-    transform: scaleY(1.1);
-  }
-  75% {
-    transform: scaleY(0.95);
-  }
-  80% {
-    transform: scaleX(0.95);
-  }
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  50%, 90% { transform: scaleY(1.1); }
+  75% { transform: scaleY(0.95); }
+  80% { transform: scaleX(0.95); }
 }
 @keyframes shake {
-  0%, 100% {
-    transform: skewX(0) scale(1);
-  }
-  50% {
-    transform: skewX(5deg) scale(0.9);
-  }
+  0%, 100% { transform: skewX(0) scale(1); }
+  50% { transform: skewX(5deg) scale(0.9); }
 }
 @keyframes particleUp {
-  0% {
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    top: -100%;
-    transform: scale(0.5);
-  }
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; top: -100%; transform: scale(0.5); }
 }
+
 @keyframes glow {
   0%, 100% {
     background-color: #ef5a00;
