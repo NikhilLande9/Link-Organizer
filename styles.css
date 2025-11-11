@@ -65,7 +65,52 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
     transition: background-color 0.3s, box-shadow 0.3s; 
 }
-h1 { color: #007bff; text-align: center; font-size: 1.8em; margin-bottom: 20px; }
+/* -------------------------------------------------------------
+   RAINBOW GRADIENT TITLE – animated & dark-mode friendly
+   ------------------------------------------------------------- */
+h1 {
+  /* 1. Base styles */
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  font-weight: 700;
+
+  /* 2. Rainbow gradient (animated) */
+  background: linear-gradient(
+    90deg,
+    #ff0000, #ff7f00, #ffff00, #00ff00,
+    #0000ff, #8b00ff, #ff00ff, #ff0000
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  /* 3. Animation */
+  animation: rainbow 8s ease infinite;
+}
+
+/* Dark mode: slightly brighter rainbow for contrast */
+body.dark-mode h1 {
+  background: linear-gradient(
+    90deg,
+    #ff3333, #ff9933, #ffff66, #33ff33,
+    #3399ff, #cc66ff, #ff66cc, #ff3333
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow 8s ease infinite;
+}
+
+/* Rainbow animation keyframes */
+@keyframes rainbow {
+  0%, 100%   { background-position: 0% 50%; }
+  50%        { background-position: 100% 50%; }
+}
 h2 { color: #555; font-size: 1.2em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
 
 .input-section, .filter-section { 
@@ -275,6 +320,12 @@ button#add-link:hover { background-color: #0056b3; }
     font-size: 0.9em;
     min-width: 40px;
 }
+@import url('https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap');
+h1 {
+  font-family: "Macondo Swash Caps", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
 
 /* -------------------------------------------------------------
    MOBILE PAGINATION – top left, bottom centre
@@ -364,7 +415,6 @@ body.dark-mode .loading-container { --uib-color: #8ab4f8; }
 }
 body.dark-mode { background-color: #121212; color: #e0e0e0; }
 body.dark-mode .container { background: #1e1e1e; box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
-body.dark-mode h1 { color: #8ab4f8; }
 body.dark-mode h2 { color: #ccc; border-bottom-color: #333; }
 body.dark-mode .input-section, body.dark-mode .filter-section { border-color: #333; }
 body.dark-mode input, body.dark-mode textarea, body.dark-mode select { background-color: #333; color: #fff; border: 1px solid #555; }
