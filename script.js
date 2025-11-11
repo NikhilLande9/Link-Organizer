@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         navigator.clipboard.writeText(url).then(() => {
             const text = btn.querySelector('.text');
             const original = text.textContent;
-            text.textContent = 'COPIED!';
+            text.textContent = 'Copied!';
             setTimeout(() => text.textContent = original, 1000);
         }).catch(() => alert('Failed to copy link.'));
     }
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="link-actions">
                     <button class="Btn copy-btn" data-url="${linkObj.url}">
                       <svg viewBox="0 0 512 512" class="svgIcon" height="1em"><path d="M288 448H64V224h64V160H64c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H288c35.3 0 64-28.7 64-64V384H288v64zm-64-96H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H224c-35.3 0-64 28.7-64 64V288c0 35.3 28.7 64 64 64z"></path></svg>
-                      <p class="text">COPY</p>
+                      <p class="text">Copy</p>
                       <span class="effect"></span>
                     </button>
                     ${isOwner ? `<button class="edit-btn" data-row="${linkObj.row}" title="Edit link">Edit</button>` : ''}
