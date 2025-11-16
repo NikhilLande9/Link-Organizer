@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nikhillande9.github.io/Link-Organizer/sitemap.xml
+Sitemap: https://niklinks.vercel.app/sitemap.xml

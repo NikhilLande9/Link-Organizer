@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    {
+      "source": "https://www.niklinks.vercel.app/:path*",
+      "destination": "https://niklinks.vercel.app/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000"
+        }
+      ]
+    }
+  ]
+}

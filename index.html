@@ -4,35 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO META TAGS -->
-    <title>NiK's Link Manager</title>
-    <meta name="description" content="NiK's Link Organizer helps you personalize, save, categorize, sort, paginate, and search your links easily. Cloud syncing, tags, dark mode, Google Sheets integration, and smart search.">
-    <meta name="keywords" content="link organizer, google sheets link tool, save links, bookmark manager, link sorter, link tags, link search, cloud link storage">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://nikhillande9.github.io/Link-Organizer/">
+    <!-- TITLE & DESCRIPTION -->
+    <title>NiK's Link Organizer</title>
+    <meta name="description" content="Organize, save, and search your links with tags, sorting, pagination, dark mode, and Google Sheets integration.">
 
-    <!-- OPEN GRAPH -->
-    <meta property="og:title" content="NiK's Link Organizer">
-    <meta property="og:description" content="Save, sort, tag, paginate and search your links with a clean, responsive UI. Synced with Google Sheets.">
+    <!-- CANONICAL -->
+    <link rel="canonical" href="https://niklinks.vercel.app/" />
+
+    <!-- OPEN GRAPH / SOCIAL -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nikhillande9.github.io/Link-Organizer/">
-    <meta property="og:image" content="https://nikhillande9.github.io/Link-Organizer/og-image.png">
+    <meta property="og:url" content="https://niklinks.vercel.app/">
+    <meta property="og:title" content="NiK's Link Organizer">
+    <meta property="og:description" content="Organize, save, and search your links with tags, sorting, pagination, dark mode, and Google Sheets integration.">
+    <meta property="og:image" content="https://niklinks.vercel.app/og-image.png">
 
     <!-- TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NiK's Link Organizer">
-    <meta name="twitter:description" content="Organize links with smart tags, pagination, sorting and search. Integrated with Google Sheets.">
-    <meta name="twitter:image" content="https://nikhillande9.github.io/Link-Organizer/og-image.png">
+    <meta name="twitter:description" content="Organize, save, and search your links with tags, sorting, pagination, dark mode, and Google Sheets integration.">
+    <meta name="twitter:image" content="https://niklinks.vercel.app/og-image.png">
 
-    <!-- ORIGINAL STYLES & FONTS -->
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="favicon.ico">
+
+    <!-- STYLES & FONTS -->
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&display=swap" rel="stylesheet">
-
-    <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="favicon.ico">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://niklinks.vercel.app/#organization",
+          "name": "NiK's Link Organizer",
+          "url": "https://niklinks.vercel.app/",
+          "logo": "https://niklinks.vercel.app/favicon.ico",
+          "sameAs": [
+            "https://github.com/nikhillande9"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://niklinks.vercel.app/#website",
+          "url": "https://niklinks.vercel.app/",
+          "name": "NiK's Link Organizer",
+          "description": "Organize, save, and search your links with tags, sorting, pagination, dark mode, and Google Sheets integration.",
+          "publisher": {
+            "@id": "https://niklinks.vercel.app/#organization"
+          },
+          "inLanguage": "en-US"
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://niklinks.vercel.app/#webpage",
+          "url": "https://niklinks.vercel.app/",
+          "name": "NiK's Link Organizer",
+          "description": "Organize, save, and search your links with tags, sorting, pagination, dark mode, and Google Sheets integration.",
+          "isPartOf": {
+            "@id": "https://niklinks.vercel.app/#website"
+          },
+          "inLanguage": "en-US"
+        }
+      ]
+    }
+    </script>
 </head>
+
 <body>
     <div class="container">
         <h1>NiK's Link Organizer</h1>
@@ -178,4 +218,7 @@
 
     <script src="script.js"></script>
 </body>
+<!-- Hidden SEO-friendly links for crawlers -->
+<div id="seo-links" style="display:none;"></div>
+
 </html>

@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextBtn = document.getElementById('next-btn');
     const pageInfo = document.getElementById('page-info');
     const body = document.body;
+    const VISITOR_COUNTER_CELL = 'visitorCount'; // a dedicated cell or key in your Sheet
+
     
     let links = [];
     let isOwner = false;
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const res = await fetch(SHEET_API_URL + '?action=get');
             if (!res.ok) throw new Error('Failed to fetch links');
             const data = await res.json();
-            
+
             if (Array.isArray(data)) {
                 links = data.map(item => ({
                     row: item.row,
@@ -96,9 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }));
                 currentPage = 1;
                 filterAndSortLinks();
+
+                // --- SEO-friendly links ---
+                const seoContainer = document.getElementById('seo-links');
+                seoContainer.innerHTML = ''; // clear previous
+                links.forEach(link => {
+                    const a = document.createElement('a');
+                    a.href = link.url;
+                    a.textContent = link.description || link.url;
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    seoContainer.appendChild(a);
+                });
             }
-        } catch (err) { 
-            console.error('API Load Error:', err); 
+        } catch (err) {
+            console.error('API Load Error:', err);
             emptyMessage.textContent = 'ERROR: Could not load data from Google Sheet API. Check Console.';
             linkCounter.textContent = 'Saved Links (0)';
             renderLinks([]);
@@ -106,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hideLoading();
         }
     }
+
 
     async function addLinkToSheet(link) {
         if (!isOwner || !ownerPassword) {
@@ -234,6 +249,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         attachEventListeners();
     }
+
+    async function incrementVisitorCount() {
+        try {
+            // Send a request to your existing Google Sheet API
+            await fetch(SHEET_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'incrementVisitor', 
+                    key: VISITOR_COUNTER_CELL
+                })
+            });
+            console.log('Visitor count incremented');
+        } catch (err) {
+            console.error('Failed to increment visitor count:', err);
+        }
+    }
+
 
     function attachEventListeners() {
         document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -481,6 +515,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.addEventListener('beforeunload', () => { ownerPassword = ''; });
-
+    incrementVisitorCount();
     loadLinksFromSheet();
 });
