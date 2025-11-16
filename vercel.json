@@ -1,20 +1,26 @@
 {
+  "version": 2,
+  "public": true,
   "redirects": [
     {
-      "source": "https://www.niklinks.vercel.app/:path*",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.niklinks.vercel.app"
+        }
+      ],
       "destination": "https://niklinks.vercel.app/:path*",
       "permanent": true
     }
   ],
   "headers": [
     {
-      "source": "/images/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000"
-        }
-      ]
+        "source": "/(.*\\.(png|ico|jpg|jpeg|webp|svg))",
+        "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000" }
+        ]
     }
+
   ]
 }
